@@ -12,27 +12,17 @@ keda-gpu-scaler
 
 ## Project Description
 
-keda-gpu-scaler enables GPU-aware autoscaling for AI inference workloads on Kubernetes. It reads NVIDIA GPU metrics directly via NVML and exposes them to KEDA, letting you scale LLM serving (vLLM, Triton), batch inference, and training jobs based on actual GPU utilization — not CPU or memory.
+A KEDA external scaler that reads GPU metrics via NVML and autoscales Kubernetes workloads based on actual GPU load. Runs as a DaemonSet on GPU nodes, serves metrics over gRPC to KEDA.
 
-The problem it solves: standard Kubernetes HPA can't see GPU load. A vLLM pod serving 200 concurrent requests shows 8% CPU while the GPU is saturated. The existing workaround (dcgm-exporter → Prometheus → KEDA) adds 15-30 seconds of latency and 5 components. This project reduces that to 2-4 seconds with 2 components.
+The short version: Kubernetes HPA can't see GPU utilization. A vLLM pod can be serving 200 requests at 8% CPU while the GPU is pegged. The usual fix is dcgm-exporter → Prometheus → PromQL → KEDA, which works but adds 15-30s of latency and 5 moving parts. This skips all of that — polls NVML directly, responds in 2-4s.
 
-Pre-built scaling profiles for common AI workloads:
-- **vllm-inference** — Scale on VRAM pressure (LLMs pre-allocate KV cache)
-- **triton-inference** — Scale on SM utilization (multi-model serving)
-- **batch** — Aggressive scale-down for offline inference
-- **training** — High utilization target, no scale-to-zero
+Includes scaling profiles for vLLM, Triton, training, and batch inference so you don't have to guess the right thresholds.
 
 ## How does this project align with the AAIF mission?
 
-AI inference infrastructure is the foundation that agentic systems run on. When an agent makes 50 tool calls in a conversation, each hitting an LLM endpoint, the inference backend needs to scale dynamically. Fixed replica counts either waste GPU resources or create latency spikes.
+This isn't an agent framework — it's the infrastructure underneath. When an agent makes a bunch of LLM calls, something has to scale the inference backend. Fixed replica counts either waste GPUs or create queuing delays.
 
-This project provides the autoscaling primitive that AI platforms need. It's not an agent framework itself, but it's infrastructure that agent deployments depend on.
-
-Specific alignment:
-- **GPU efficiency** — Scale inference pods based on actual GPU load, not guesswork
-- **Scale-to-zero** — Activation thresholds enable spinning down idle models
-- **Multi-model serving** — Aggregation modes handle nodes with multiple models/GPUs
-- **Production-ready** — Already running in production on A100 clusters
+This project handles GPU-based autoscaling so inference pods scale up when GPUs are loaded and scale back down (including to zero) when they're idle. It's already running in production on A100 clusters for vLLM serving.
 
 ## Project Website
 
@@ -99,7 +89,7 @@ Features proposed as GitHub Issues, discussed, implemented via PRs. Maintainer a
 
 ## Project Maturity
 
-Early production. v0.4.0 released, running on A100 clusters. Small but growing contributor base.
+v0.4.0 released, running in production on A100 clusters.
 
 ## Communication Channels
 
@@ -122,8 +112,4 @@ Currently using GitHub Actions free tier, GHCR, GitHub Pages. No immediate needs
 
 ## Notes for TC Presentation
 
-**Angle:** Infrastructure for AI inference autoscaling, not an agent framework. The pitch is "this is what your vLLM/Triton backends need to scale properly."
-
-**Demo:** Show KEDA scaling a vLLM deployment based on GPU memory pressure. 30 seconds.
-
-**Differentiator:** No Prometheus pipeline, sub-5-second metric latency, pre-built profiles for LLM serving.
+Not an agent framework — the infra that agent deployments need. Demo: KEDA scaling a vLLM deployment on GPU memory pressure, 30 seconds. Key point: no Prometheus pipeline, sub-5s latency, profiles for LLM serving out of the box.
