@@ -2,21 +2,31 @@
 
 Technical direction for keda-gpu-scaler. Updated as priorities shift.
 
-## Current (v0.4.x)
+## v0.5.0 (Released June 2026)
+
+- ✅ Cross-environment GPU metrics parity — unified `--env` flag and JSON schema across Kubernetes, SLURM, Flux, and standalone ([#54](https://github.com/pmady/keda-gpu-scaler/issues/54))
+- ✅ Flux workload manager integration ([#53](https://github.com/pmady/keda-gpu-scaler/issues/53))
+- ✅ SLURM workload manager integration ([#52](https://github.com/pmady/keda-gpu-scaler/issues/52))
+- ✅ CI hardening: arm64 builds, release checksums, semver tag guard
+
+## v0.4.0 (Released May 2026)
 
 - NVIDIA GPU support via NVML
-- Pre-built scaling profiles (vLLM, Triton, training, batch)
+- Pre-built scaling profiles (vLLM, Triton, training, batch, distributed-training)
 - Helm chart deployment
 - Prometheus metrics endpoint
-- SLURM and Flux workload manager integration
 - PCIe and NVLink throughput metrics
+- HTTP health probes
 
-## Next (v0.5.x)
+## Next (v0.6.0 — August 2026)
 
-- ✅ **Cross-environment GPU metrics parity** — unified `--env` flag and JSON schema across Kubernetes, SLURM, Flux, and standalone. Compare GPU performance across on-prem and cloud with the same binary and tooling. ([#54](https://github.com/pmady/keda-gpu-scaler/issues/54))
-- **MIG support** — Per-instance metrics for Multi-Instance GPU partitions
-- **vLLM queue depth** — Scale on pending requests via vLLM engine API
-- **Improved aggregation** — Weighted averages, percentile-based thresholds
+- **New scaling profiles** — TGI, Ollama ([#64](https://github.com/pmady/keda-gpu-scaler/issues/64), [#65](https://github.com/pmady/keda-gpu-scaler/issues/65))
+- **MIG support** — Per-instance metrics for Multi-Instance GPU partitions ([#26](https://github.com/pmady/keda-gpu-scaler/issues/26))
+- **vLLM queue depth** — Scale on pending requests via vLLM engine API ([#28](https://github.com/pmady/keda-gpu-scaler/issues/28))
+- **Improved aggregation** — p95, p99 percentile methods ([#69](https://github.com/pmady/keda-gpu-scaler/issues/69))
+- **CI/CD hardening** — golangci-lint config, go vet, test coverage, pre-commit hooks ([#72](https://github.com/pmady/keda-gpu-scaler/issues/72), [#73](https://github.com/pmady/keda-gpu-scaler/issues/73), [#74](https://github.com/pmady/keda-gpu-scaler/issues/74), [#76](https://github.com/pmady/keda-gpu-scaler/issues/76))
+- **Grafana dashboard** for GPU fleet visibility ([#29](https://github.com/pmady/keda-gpu-scaler/issues/29))
+- **Contributor experience** — CONTRIBUTORS.md, --version flag, --dry-run flag ([#70](https://github.com/pmady/keda-gpu-scaler/issues/70), [#62](https://github.com/pmady/keda-gpu-scaler/issues/62), [#71](https://github.com/pmady/keda-gpu-scaler/issues/71))
 
 ## Future
 

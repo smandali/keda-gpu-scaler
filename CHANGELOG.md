@@ -6,19 +6,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v0.5.0] - 2026-06-23
+
 ### Added
 
-- **Cross-environment GPU metrics parity** (`--env` flag) — single binary and unified JSON schema across Kubernetes, SLURM, Flux, and standalone. The new `pkg/env` package auto-detects the orchestrator (priority: SLURM → Flux → Kubernetes → standalone) and populates a common `environment` block in all output formats (JSON, CSV, table). Replaces the separate `--slurm` and `--flux` flags.
-- Unified JSON output schema with top-level `environment` and `collected_at` fields, enabling direct comparison of GPU metrics across environments.
+- **Cross-environment GPU metrics parity** (`--env` flag) — single binary and unified JSON schema across Kubernetes, SLURM, Flux, and standalone. The `pkg/env` package auto-detects the orchestrator (priority: SLURM → Flux → Kubernetes → standalone) and populates a common `environment` block in all output formats (JSON, CSV, table). Replaces the separate `--slurm` and `--flux` flags.
+- Unified JSON output schema with top-level `environment` and `collected_at` fields for cross-environment GPU comparison.
 - `pkg/env` package: `Detect()`, `Parse()`, `FromType()`, `Context` with `VisibleDevices()`, `Header()`, `Row()`.
-- Kubernetes environment detection via `KUBERNETES_SERVICE_HOST`; pod/node/namespace metadata via Downward API env vars (`NODE_NAME`, `POD_NAME`, `POD_NAMESPACE`).
-- `keda-gpu-scaler` (KEDA scaler binary) now logs runtime environment metadata (orchestrator, node, pod, namespace) at startup.
-- `docs/cross-env-comparison.md` — guide for comparing GPU performance across on-prem and cloud environments with `jq` recipes and CSV examples.
+- Kubernetes environment detection via `KUBERNETES_SERVICE_HOST`; pod/node/namespace metadata via Downward API env vars.
+- Runtime environment metadata logged at startup (orchestrator, node, pod, namespace).
+- `docs/cross-env-comparison.md` — guide for comparing GPU performance across on-prem and cloud.
+- CI: arm64 builds, release checksums, semver tag guard rail.
+
+### Changed
+
+- Bumped `github.com/NVIDIA/go-nvml` to 0.13.2-0.
+
+### Contributors
+
+- [@venkata22a](https://github.com/venkata22a) - Cross-environment metrics, Flux integration, CI/CD improvements
+
+[v0.5.0]: https://github.com/pmady/keda-gpu-scaler/compare/v0.4.0...v0.5.0
+
+## [v0.4.0] - 2026-06-08
+
+### Added
+
 - HTTP health probes (`--probe-port=8081`) with `/healthz` and `/readyz` endpoints
 - PCIe bandwidth metrics: `pcie_tx_kbps`, `pcie_rx_kbps` for CPU↔GPU throughput monitoring
 - NVLink bandwidth metrics: `nvlink_tx_mbps`, `nvlink_rx_mbps` for GPU↔GPU communication monitoring
 - `distributed-training` scaling profile optimized for NVLink systems
-- Comprehensive documentation for advanced GPU metrics with hardware-specific guidance
+- Standalone `gpu-metrics` CLI for HPC environments (SLURM, Flux, bare metal)
+- SLURM workload manager integration for gpu-metrics CLI
 - Updated Prometheus metrics with PCIe/NVLink throughput gauges and device count
 - Support for 10 total metric types including temperature, power draw, and memory metrics
 - Graceful handling of non-NVLink hardware (metrics return 0 with debug logging)
@@ -32,7 +51,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Contributors
 
 - [@ibobgunardi](https://github.com/ibobgunardi) - HTTP health probes implementation
-- [@venkata22a](https://github.com/venkata22a) - PCIe/NVLink bandwidth metrics and comprehensive documentation
+- [@venkata22a](https://github.com/venkata22a) - PCIe/NVLink bandwidth metrics, CI/CD, and comprehensive documentation
+
+[v0.4.0]: https://github.com/pmady/keda-gpu-scaler/compare/v0.3.0...v0.4.0
 
 ## [v0.3.0] - 2026-05-29
 
