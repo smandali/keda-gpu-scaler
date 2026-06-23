@@ -73,7 +73,7 @@ jobs:
       - name: Install cross toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends gcc gcc-aarch64-linux-gnu
+          sudo apt-get install -y --no-install-recommends gcc gcc-aarch64-linux-gnu libc6-dev-arm64-cross
 
       # The scaler links NVIDIA's NVML (libnvidia-ml.so) at runtime, so the
       # binaries require CGO. They will only run on hosts that have the NVIDIA
